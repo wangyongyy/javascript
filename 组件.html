@@ -30,18 +30,24 @@
 			window.onload=function(){
 				var div1=new Drag('div1');
 				
-				div1.init(function(){
-					this.obj.style.background='pink';
-				},function(){
-					this.obj.style.background='red';
+				div1.init({
+					moveCB:function(){
+						this.obj.style.background='pink';
+					},
+					upCB:function(){
+						this.obj.style.background='red';
+					}
 				})
 				
 				
 				var div2=new LimitDrag('div2');
-				div2.init(function(){
-					this.obj.style.background='blue';
-				},function(){
-					this.obj.style.background='green';
+				div2.init({
+					moveCB:function(){
+						this.obj.style.background='blue';
+					},
+					upCB:function(){
+						this.obj.style.background='green';
+					}
 				});
 				
 				
@@ -51,27 +57,31 @@
 				this.obj=document.getElementById(id);
 				this.distanceX=0;
 				this.distanceY=0;
+				this.setting={};
 				
 			};
 			
-			Drag.prototype.init=function(moveCB,upCB){
+			Drag.prototype.init=function(setting){
+				this.setting.moveCB=setting.moveCB;
 				var _this=this;
 				this.obj.addEventListener('mousedown',function(e){
-					_this.down(e,moveCB,upCB);
+					_this.down(e);
 				})
 			}
 			
-			Drag.prototype.down=function(e,moveCB,upCB){
+			Drag.prototype.down=function(e){
 				this.distanceX=e.clientX-this.obj.offsetLeft;
 				this.distanceY=e.clientY-this.obj.offsetTop;
 				var _this=this;
 				document.onmousemove=function(e){
 					//_this.obj.style.background='pink';
-					moveCB&&moveCB.call(_this);
+					//moveCB&&moveCB.call(_this);
+					_this.setting.moveCB.call(_this);
 					_this.move(e);
 				};
 				document.addEventListener('mouseup',function(){
-					upCB&&upCB.call(_this);
+					//upCB&&upCB.call(_this);
+					_this.setting.upCB.call(_this);
 					_this.up();
 				})
 			}
