@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>组件</title>
+		<style type="text/css">
+			div{
+				width: 100px;
+				height: 100px;
+				position: absolute;
+				left: 0;
+				top: 0;
+				cursor: move;
+			}
+			#div1{
+				background: red;
+			}
+			#div2{
+				background: green;
+				left: 100px;
+			}
+			#div3{
+				background: yellow;
+				left: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="div1"></div>
+		<div id="div2"></div>
+		<div id="div3"></div>
+		
+		
+		<script type="text/javascript">
+			window.onload=function(){
+				var div1=new Drag();
+				div1.init({
+					id:'div1',
+					
+				});
+				
+				div1.addCustomEventListener(div1,'按下',function(){
+					console.log('按下');
+				});
+				div1.addCustomEventListener(div1,'移动',function(){
+					console.log('移动');
+				})
+				
+				var div2=new Drag();
+				div2.init({
+					id:'div2'
+					
+				});
+				var div3=new Drag();
+				div3.init({
+					id:'div3'
+				});
+			};
+//------------------------------------------------------------			
+			function Drag(){
+				this.obj=null;
+				this.distanceX=0;
+				this.distanceY=0;
+				this.setting={
+					id:''
+					
+				};//默认配置参数
+			};
+//------------------------------------------------------------			
+			//初始化
+			Drag.prototype.init=function(setting){
+				
+				/*this.setting.downCB=setting.downCB||function(){};
+				this.setting.moveCB=setting.moveCB||function(){};
+				this.setting.upCB=setting.upCB||function(){};*/
+				
+				for(var attr in setting){
+					this.setting[attr]=setting[attr];
+				}
+				
+				if(!this.setting.id){
+					console.log('id参数错误');
+					return;
+				}
+				
+				this.obj=document.getElementById(this.setting.id);
+				
+				var _this=this;
+				this.obj.addEventListener('mousedown',function(e){
+					_this.down(e);
+				})
+			}
+			
+			
+//-----------------------------------------------------------------			
+			//鼠标按下去
+			Drag.prototype.down=function(e){
+				this.distanceX=e.clientX-this.obj.offsetLeft;
+				this.distanceY=e.clientY-this.obj.offsetTop;
+				var _this=this;
+				
+				this.trigger(this,'按下');
+				
+				document.onmousemove=function(e){
+					_this.trigger(_this,'移动');
+					_this.move(e);
+				}
+				document.addEventListener('mouseup',function(){
+					_this.up(e);
+				})
+			}
+//---------------------------------------------------------------------			
+			Drag.prototype.move=function(e){
+				this.obj.style.left=e.clientX-this.distanceX+'px';
+				this.obj.style.top=e.clientY-this.distanceY+'px';
+			}
+			
+			Drag.prototype.up=function(e){
+				document.onmousemove=null;
+			}
+			
+//-------------------------------------------------------------------			
+			
+			
+			
+			Drag.prototype.addCustomEventListener=function(obj,eventName,fn){
+				obj.events=obj.events||{};
+				obj.events[eventName]=obj.events[eventName]||[];
+				obj.events[eventName].push(fn);
+			}
+			Drag.prototype.trigger=function(obj,eventName){
+				//判断对象身上这个事件是否存在
+				var fns=obj.events&&obj.events[eventName];
+				if(fns){
+					for(var i=0;i<fns.length;i++){
+						fns[i].call(obj);
+					}
+				}
+			}
+			
+		</script>
+		
+		
+		
+		
+	</body>
+</html>
