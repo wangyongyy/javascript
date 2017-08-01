@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#myCanvas{
+				border: 1px solid red;
+				margin: 0 auto;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="600" height="400"></canvas>
+		
+		
+		
+		<script type="text/javascript">
+			var canvas=document.getElementById("myCanvas");
+			var pen=canvas.getContext('2d');
+			
+			var circleX=200;
+			var circleY=200;
+			var r=200;
+			
+			draw();
+			setInterval(draw,1000);
+			
+			function draw(){
+				
+				pen.clearRect(0,0,canvas.width,canvas.height);
+				
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r,0,360*Math.PI/180);
+				pen.stroke();
+				
+				
+				pen.beginPath();
+				for(var i =0;i<60;i++){
+					
+					pen.moveTo(circleX,circleY);
+					pen.arc(circleX,circleY,r,i*6*Math.PI/180,(i+1)*6*Math.PI/180)
+					
+				}
+				pen.closePath();
+				pen.stroke();
+				
+				pen.fillStyle='white';
+				pen.beginPath();
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r*19/20,0,360*Math.PI/180);
+				pen.closePath();
+				pen.fill();
+				
+				pen.beginPath();
+				pen.lineWidth=3;
+				for(var i =0;i<12;i++){
+					
+					pen.moveTo(circleX,circleY);
+					pen.arc(circleX,circleY,r,i*30*Math.PI/180,(i+1)*30*Math.PI/180)
+					
+				}
+				pen.closePath();
+				pen.stroke();
+				
+				
+				pen.fillStyle='white';
+				pen.beginPath();
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r*18/20,0,360*Math.PI/180);
+				pen.closePath();
+				pen.fill();
+				
+				//获取当前时间
+				var current=new Date();
+				var hours=current.getHours();
+				var mins=current.getMinutes();
+				var secs=current.getSeconds();
+				//时针要转多少度
+				var hoursValue=(-90+30*hours+30/60*mins)*Math.PI/180;
+				var minsValue=(-90+6*mins)*Math.PI/180;
+				var secsValue=(-90+6*secs)*Math.PI/180;
+				
+				//时针
+				pen.beginPath();
+				pen.lineWidth=5;
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r*10/20,hoursValue,hoursValue);
+				pen.closePath();
+				pen.stroke();
+				
+				//分针
+				//时针
+				pen.beginPath();
+				pen.lineWidth=3;
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r*15/20,minsValue,minsValue);
+				pen.closePath();
+				pen.stroke();
+				
+				//秒针
+				pen.beginPath();
+				pen.lineWidth=1;
+				pen.moveTo(circleX,circleY);
+				pen.arc(circleX,circleY,r*18/20,secsValue,secsValue);
+				pen.closePath();
+				pen.stroke();
+			}
+			
+		</script>
+	</body>
+</html>
